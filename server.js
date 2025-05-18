@@ -9,7 +9,23 @@ const taskRoutes = require('./routes/taskRoute');
 const leaderboardRoutes = require('./routes/leaderboardRoute.js');
 
 const app = express();
-app.use(cors());
+const allowedOrigins = [
+  "https://varnetra-task-tracker-frontend.vercel.app", // your deployed frontend
+  "http://localhost:5173", // for local dev (optional)
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin like mobile apps or curl
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 // Sample route to test server
